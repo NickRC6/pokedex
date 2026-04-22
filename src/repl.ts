@@ -8,7 +8,7 @@ export function startREPL(state: State) {
 
     state.rl.prompt()
 
-    state.rl.on("line", (line) => {
+    state.rl.on("line", async (line) => {
         if (line == "") {
             state.rl.prompt();
             return;
@@ -20,8 +20,14 @@ export function startREPL(state: State) {
             state.rl.prompt();
             return;
         }
-        command.callback(state);
+        try {
+        await command.callback(state);
+        } catch (err) {
+        console.log("Error:", (err as Error).message);
+        }
         state.rl.prompt();
     });
 }
+
+
 
