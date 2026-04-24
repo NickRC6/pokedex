@@ -116,6 +116,12 @@ export type Pokemon = {
       name: string;
       url: string;
     };
+    stats: {
+      base_stat: number;
+      stat: {
+        name: string;
+      };
+    }[];
 }
 
 export type PokemonSpecies = {
