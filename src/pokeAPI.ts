@@ -111,5 +111,13 @@ export type Location = {
 export type Pokemon = {
     id: number;
     name: string;
-    base_experience: string;
+    base_experience: number;
+    species: {
+      name: string;
+      url: string;
+    };
 }
+
+export type PokemonSpecies = {
+    capture_rate: number;
+};
