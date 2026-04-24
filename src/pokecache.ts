@@ -7,13 +7,38 @@ export type CacheEntry<T> = {
 
 export class Cache {
     #cache = new Map<string, CacheEntry<any>>();
-}
+    #reapIntervalId: NodeJS.Timeout | undefined = undefined;
+    #interval: number;
 
-export function add<T>(key: string, val: T) {
-    // Create an add<T>() method that adds a new entry to the cache object. It should take a key (a string) and a val (a T generic).
-}
+    constructor(interval: number) {
+        this.#interval = interval
+        this.#startReapLoop()
+    }
 
-export function get<T>(key: string): T | undefined {
-    // Create a get<T>() method that gets an entry from the cache object. It should take a key (a string) and returns some object. Return undefined if the entry is missing.
-    return undefined
+    add<T>(key: string, val: T): void {
+        const entry: CacheEntry<T> = { value: val, createdAt: Date.now() };
+        this.#cache.set(key, entry);
+    }
+
+    get<T>(key: string): CacheEntry<T> | undefined {
+        return this.#cache.get(key) as CacheEntry<T> | undefined;
+    }
+
+    #reap(): void {
+        const cutoff = Date.now() - this.#interval;
+        for (const [key, entry] of this.#cache) {
+            if (entry.createdAt < cutoff) {
+                this.#cache.delete(key);
+            }
+        }
+    }
+
+    #startReapLoop() {
+        this.#reapIntervalId = setInterval(() => this.#reap(), this.#interval);
+    }
+
+    stopReapLoop() {
+        clearInterval(this.#reapIntervalId)
+        this.#reapIntervalId = undefined
+    }
 }
