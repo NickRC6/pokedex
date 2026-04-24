@@ -20,8 +20,9 @@ export class Cache {
         this.#cache.set(key, entry);
     }
 
-    get<T>(key: string): CacheEntry<T> | undefined {
-        return this.#cache.get(key) as CacheEntry<T> | undefined;
+    get<T>(key: string): T | undefined {
+        const entry = this.#cache.get(key);
+        return entry?.value
     }
 
     #reap(): void {
