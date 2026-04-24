@@ -15,13 +15,14 @@ export function startREPL(state: State) {
         }
         const words = cleanInput(line);
         const command = state.commands[words[0]];
+        const args = words.slice(1);
         if (!command) {
             console.log("Unknown command");
             state.rl.prompt();
             return;
         }
         try {
-        await command.callback(state);
+        await command.callback(state, ...args);
         } catch (err) {
         console.log("Error:", (err as Error).message);
         }
